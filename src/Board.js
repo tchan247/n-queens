@@ -160,13 +160,42 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
-    hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+    hasMajorDiagonalConflictAt: function(m) {
+      var boardSize = this.attributes.n;
+      var foundPieces = 0;
+      var j = m;
+      for (var i = 0; i < boardSize; i++) {
+        j++;
+        // check if current is in bounds
+        // if it isn't, continue
+        if (j < 0) {
+          continue;
+        } else {
+          // if it is, check if current cell is a piece
+          var currentCell = this.attributes[i][j];
+          if (currentCell === 1) {
+            // increase found pieces by 1
+            foundPieces++;
+            // if foundPieces is >= 2
+            if (foundPieces === 2) {
+            // return that there is a conflict
+            return true;
+            }
+          }
+        }
+      }
+      return false;
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      var boardSize = this.attributes.n;
+      for(var i=(boardSize*-1)+1; i<boardSize; i++) {
+        if(this.hasMajorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -175,13 +204,43 @@
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
-    hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+    hasMinorDiagonalConflictAt: function(m) {
+      var boardSize = this.attributes.n;
+      var foundPieces = 0;
+      var j = m;
+      for (var i = 0; i < boardSize; i++) {
+        j--;
+        // check if current is in bounds
+        // if it isn't, continue
+        if (j > boardSize-1) {
+          continue;
+        } else {
+          // if it is, check if current cell is a piece
+          var currentCell = this.attributes[i][j];
+          console.log(i+","+j);
+          if (currentCell === 1) {
+            // increase found pieces by 1
+            foundPieces++;
+            // if foundPieces is >= 2
+            if (foundPieces === 2) {
+            // return that there is a conflict
+            return true;
+            }
+          }
+        }
+      }
+      return false;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      var boardSize = this.attributes.n;
+      for(var i=(boardSize*2)-1; i>-1; i--) {
+        if(this.hasMinorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
+      return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
