@@ -28,7 +28,7 @@ window.findNRooksSolution = function(n) {
           //add piece to current cell
           currentBoard.togglePiece(i,j);
           //check current column & row for conflicts
-          if (currentBoard.hasRowConflictAt(j) || currentBoard.hasColConflictAt(i)) {
+          if (currentBoard.hasRowConflictAt(i) || currentBoard.hasColConflictAt(j)) {
             //if either check is true, toggle piece off
             currentBoard.togglePiece(i,j);
           } else {
@@ -38,7 +38,7 @@ window.findNRooksSolution = function(n) {
               // if rook count === n
             if (rookCount === n) {
                 // solution = board
-              solution = currentBoard;
+              solution = currentBoard.rows();
             }
           }
         }
