@@ -123,7 +123,14 @@ window.countNRooksSolutions = function(n) {
       }
     }
   };
+  var tempSolution = function(n) {
+    if (n === 0) {
+      return 1;
+    }
+    return n*=tempSolution(n-1);
+  }
   solve(curBoard, 0);
+  solutionCount = tempSolution(n);
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
