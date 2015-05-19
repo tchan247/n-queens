@@ -108,29 +108,29 @@ var makeTree = function(n) {
 window.countNRooksSolutions = function(n) {
   var solutionCount = 0;
   var curBoard = new Board({n:n});
-  var solve = function(currentBoard, x) {
+
+  var solve = function(x) {
+    if (x+1 === n) {
+      solutionCount++;
+      return;
+    }
     for (var i = 0; i < n; i++) {
       curBoard.togglePiece(x, i);
-      if (curBoard.hasAnyRooksConflicts()) {
-        curBoard.togglePiece(x, i);
-      } else {
-        if (x+1 === n) {
-          solutionCount++;
-          curBoard.togglePiece(x, i);
-        } else {
-          solve(curBoard, x+1);
-        }
+      if (!curBoard.hasAnyRooksConflicts()) {
+        solve(x+1);
       }
+      curBoard.togglePiece(x, i);
+
     }
   };
-  var tempSolution = function(n) {
-    if (n === 0) {
-      return 1;
-    }
-    return n*=tempSolution(n-1);
-  }
-  solve(curBoard, 0);
-  solutionCount = tempSolution(n);
+  // var tempSolution = function(n) {
+  //   if (n === 0) {
+  //     return 1;
+  //   }
+  //   return n*=tempSolution(n-1);
+  // }
+  solve(0);
+  // solutionCount = tempSolution(n);
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
