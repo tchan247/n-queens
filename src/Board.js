@@ -217,7 +217,6 @@
         } else {
           // if it is, check if current cell is a piece
           var currentCell = this.attributes[i][j];
-          console.log(i+","+j);
           if (currentCell === 1) {
             // increase found pieces by 1
             foundPieces++;
