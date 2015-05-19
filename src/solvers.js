@@ -18,46 +18,112 @@ window.findNRooksSolution = function(n) {
   var size = {n:n};
   var currentBoard = new Board(size);
   var rookCount = 0;
-  var rRooks = function(j) {
-    if (rookCount < n) {
-      for (var i = 0; i < n; i++) {
-        var curCell = currentBoard.attributes[i][j];
-        // check current cell
-        // if current cell is 0
-        if (curCell === 0) {
-          //add piece to current cell
-          currentBoard.togglePiece(i,j);
-          //check current column & row for conflicts
-          if (currentBoard.hasRowConflictAt(i) || currentBoard.hasColConflictAt(j)) {
-            //if either check is true, toggle piece off
-            currentBoard.togglePiece(i,j);
-          } else {
-            //if both checks false
-            //increase rook count by one
-            rookCount++;
-              // if rook count === n
-            if (rookCount === n) {
-                // solution = board
-              solution = currentBoard.rows();
-            }
-          }
-        }
+  for(var i=0; i<n; i++) {
+    for(var j=0; j<n; j++) {
+      var currentCell = currentBoard.attributes[i][j];
+      currentBoard.togglePiece(i,j);
 
+      if(currentBoard.hasAnyRooksConflicts()){
+        currentBoard.togglePiece(i,j);
+      } else {
+        rookCount++;
+        if(rookCount === n) {
+          solution = currentBoard.rows();
+          console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
+          return solution;
+        }
       }
-      rRooks(j+1);
+
     }
   }
-  rRooks(0);
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
 };
 
+// tree structure
+var Tree = function(value){
+  var newTree = {};
+  newTree.value = value;
+  for(var key in treeMethods){
+    newTree[key] = treeMethods[key];
+  }
 
+  newTree.children = [];
+
+  return newTree;
+};
+
+var treeMethods = {};
+
+treeMethods.addChild = function(value){
+  var tree = Tree(value);
+  this.children.push(tree);
+  return tree;
+};
+
+treeMethods.contains = function(target){
+  var contains = false;
+
+  var inner = function(tree){
+    if(tree.value === target){
+      contains = true;
+    }
+
+    var children = tree.children;
+
+    if(!children){
+      return ;
+    }
+
+    for(var i=0; i<children.length; i++) {
+      inner(children[i]);
+    }
+  }
+  // debugger;
+  inner(this);
+
+  return contains;
+};
+
+var makeTree = function(n) {
+  var currentTree = Tree(new Board({n:n}));
+  var makeChildren = function(x, current) {
+    if(x > 0) {
+      for(var i=0; i<n; i++){
+        current.addChild(current.value);
+        makeChildren(x-1, current.children[j]);
+      }
+        // current.children[i].value.togglePiece(i, current.children.length-1);
+      // for (var j = 0; j < n; j++) {
+      // current.value.togglePiece(depth, current.children.length-1);
+      // }
+    }
+  }
+  makeChildren(n, currentTree, 0);
+  console.log(currentTree);
+
+  return currentTree;
+
+}
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
-
+  var solutionCount = 0;
+  var curBoard = new Board({n:n});
+  var solve = function(currentBoard, x) {
+    for (var i = 0; i < n; i++) {
+      curBoard.togglePiece(x, i);
+      if (curBoard.hasAnyRooksConflicts()) {
+        curBoard.togglePiece(x, i);
+      } else {
+        if (x+1 === n) {
+          solutionCount++;
+          curBoard.togglePiece(x, i);
+        } else {
+          solve(curBoard, x+1);
+        }
+      }
+    }
+  };
+  solve(curBoard, 0);
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
@@ -80,3 +146,5 @@ window.countNQueensSolutions = function(n) {
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
+
+
